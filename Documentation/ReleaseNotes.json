@@ -4313,6 +4313,10 @@
     "upload-ios-cloud-archives-without-ad-hoc-export": {
       "category": "internal",
       "message": "Upload iOS Cloud archives to TestFlight from the App Store export when the ad hoc export fails"
+    },
+    "appearance-light-dark-follow-system": {
+      "category": "new",
+      "message": "Choose Light, Dark or System in Look and Feel. Crest follows macOS between light and dark by default, and in dark each Space wears a charcoal shade of its colors. Turn off Use Space colors for plain gray chrome in every Space."
     }
   }
 }

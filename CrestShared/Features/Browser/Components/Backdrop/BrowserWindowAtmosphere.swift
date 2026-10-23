@@ -13,7 +13,7 @@ struct BrowserWindowAtmosphere: View {
     // MARK: - Initializers
 
     init(space: SpaceModel?) {
-        branding = space.map(\.settings.look)
+        branding = space.map(\.settings.look.shown)
     }
 
     var body: some View {

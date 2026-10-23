@@ -17,6 +17,8 @@ extension BrandColor {
     static let rose = Tincture.rose.color
     static let sand = Tincture.sand.color
     static let folderDefault = BrandColor(red: 0.43, green: 0.48, blue: 0.54, alpha: 1)
+    /// The plain light gray the window wears when it ignores Space colors.
+    static let neutralChrome = BrandColor(red: 0.88, green: 0.88, blue: 0.89, alpha: 1)
     #if os(macOS)
         /// What an agent that gives no brand colour of its own wears.
         static let agentDefault = BrandColor(red: 0.53, green: 0.54, blue: 0.56, alpha: 1)
@@ -26,11 +28,36 @@ extension BrandColor {
         .ink, .indigo, .ocean, .sky, .teal, .sage, .gold, .ember, .rose, .sand,
     ]
 
+    /// How bright a color draws in a dark appearance, from its darkest to its
+    /// brightest: a charcoal base tinted with its hue. The sidebar's layers
+    /// lighten it a little, so a light gray Space shows as a neutral charcoal
+    /// near #2B2B2B.
+    private static let darkBrightness: ClosedRange<Double> = 0.08...0.12
+    /// How much of a color's saturation stays in a dark appearance.
+    private static let darkSaturation = 0.8
+
     // MARK: - Variables
 
     /// The tone that reads best over this one solid color.
     var foregroundTone: BrowserSpaceForegroundTone {
         ColorPalette(colors: [self]).foregroundTone(strength: 1, readabilityFade: 0)
+    }
+
+    /// This color as a dark appearance draws it: the same hue, slightly less
+    /// saturated, darkened toward black, so a light color turns into a dark
+    /// tint of itself and a dark one stays as dark as it is.
+    var darkAppearance: BrandColor {
+        let highest = Swift.max(red, green, blue)
+        let lowest = Swift.min(red, green, blue)
+        let range = Self.darkBrightness
+        let brightness = Swift.min(highest, range.lowerBound + (range.upperBound - range.lowerBound) * highest)
+        let saturation = highest > 0 ? (highest - lowest) / highest * Self.darkSaturation : 0
+        let spread = highest - lowest
+        func channel(_ value: Double) -> Double {
+            let distance = spread > 0 ? (highest - value) / spread : 0
+            return brightness * (1 - saturation * distance)
+        }
+        return BrandColor(clampingRed: channel(red), green: channel(green), blue: channel(blue), alpha: alpha)
     }
 
     // MARK: - Initializers

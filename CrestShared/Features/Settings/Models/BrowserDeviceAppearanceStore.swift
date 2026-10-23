@@ -1,5 +1,6 @@
 import Foundation
 import Observation
+import SwiftUI
 
 struct BrowserTabAppearance: Codable, Equatable, Sendable {
     enum Borders: String, Codable, CaseIterable { case selected, pinned, all }
@@ -81,6 +82,8 @@ final class BrowserDeviceAppearanceStore {
     static let addressKey = "crest.appearance.address"
     static let cornerRadiusKey = "crest.appearance.cornerRadius"
     static let surfaceMaterialKey = "crest.appearance.surfaceMaterial"
+    static let modeKey = "crest.appearance.mode"
+    static let usesSpaceColorsKey = "crest.appearance.usesSpaceColors"
     static let maximumCornerRadius: Double = 40
     var cornerRadius: Double {
         didSet { defaults.set(sidebarCornerRadius, forKey: Self.cornerRadiusKey) }
@@ -96,6 +99,17 @@ final class BrowserDeviceAppearanceStore {
     var surfaceMaterial: CrestSurfaceMaterial {
         didSet { defaults.set(surfaceMaterial.name, forKey: Self.surfaceMaterialKey) }
     }
+    /// Whether windows draw light, dark, or as the system does, stored by name.
+    var mode: BrowserAppearanceMode {
+        didSet { defaults.set(mode.name, forKey: Self.modeKey) }
+    }
+    /// Whether the window wears each Space's colors, or plain neutral chrome.
+    var usesSpaceColors: Bool {
+        didSet { defaults.set(usesSpaceColors, forKey: Self.usesSpaceColorsKey) }
+    }
+    /// The scheme the windows draw in now, as the platform reports it once
+    /// ``mode`` and the system's own appearance are applied.
+    var shownColorScheme = ColorScheme.light
 
     init(defaults: UserDefaults) {
         self.defaults = defaults
@@ -125,6 +139,12 @@ final class BrowserDeviceAppearanceStore {
         surfaceMaterial =
             CrestSurfaceMaterial.named(defaults.string(forKey: Self.surfaceMaterialKey))
             ?? BrowserLookAndFeelDefaults.surfaceMaterial
+        mode =
+            BrowserAppearanceMode.named(defaults.string(forKey: Self.modeKey))
+            ?? BrowserLookAndFeelDefaults.appearanceMode
+        usesSpaceColors =
+            defaults.object(forKey: Self.usesSpaceColorsKey) == nil
+            ? BrowserLookAndFeelDefaults.usesSpaceColors : defaults.bool(forKey: Self.usesSpaceColorsKey)
     }
 
     private func save(_ value: some Encodable, key: String) {
