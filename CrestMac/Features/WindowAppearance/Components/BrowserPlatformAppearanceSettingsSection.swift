@@ -1,7 +1,8 @@
 import SwiftUI
 
 /// The shared Window group, plus the window choices only the desktop has:
-/// light or dark, Space colors, Space page motion and the sidebar hover area.
+/// light or dark, how far dark dims Space colors, Space page motion and the
+/// sidebar hover area.
 struct BrowserPlatformAppearanceSettingsSection: View {
     var space: BrowserSpaceAppearance?
     var showsPreview = false
@@ -14,8 +15,8 @@ struct BrowserPlatformAppearanceSettingsSection: View {
 
     var body: some View {
         let mode = CrestSettingValue($appearance.mode, default: BrowserLookAndFeelDefaults.appearanceMode)
-        let spaceColors = CrestSettingValue(
-            $appearance.usesSpaceColors, default: BrowserLookAndFeelDefaults.usesSpaceColors)
+        let dimming = CrestSettingValue(
+            $appearance.darkSpaceDimming, default: BrowserLookAndFeelDefaults.darkSpaceDimming)
 
         let motion = CrestSettingValue($animatesSpacePages, default: SpacePageMotionPreference.defaultValue)
 
@@ -26,7 +27,7 @@ struct BrowserPlatformAppearanceSettingsSection: View {
             showsPreview: showsPreview,
             extraSettings: [
                 mode.resettable("Appearance"),
-                spaceColors.resettable("Use Space colors"),
+                dimming.resettable("Dim Space colors in dark"),
                 motion.resettable("Animate pages when switching Spaces"),
                 revealWidth.resettable("Sidebar hover area"),
             ]
@@ -43,11 +44,12 @@ struct BrowserPlatformAppearanceSettingsSection: View {
                 .accessibilityIdentifier("appearance-mode")
             }
 
-            CrestSettingRow("Use Space colors", setting: spaceColors.resettable("Use Space colors")) {
-                Toggle("Use Space colors", isOn: spaceColors.binding)
-                    .labelsHidden()
-                    .accessibilityIdentifier("uses-space-colors")
-            }
+            CrestSettingSlider(
+                "Dim Space colors in dark",
+                value: dimming,
+                readout: .percent(zero: "Off", full: "Full"),
+                identifier: "dark-space-dimming"
+            )
 
             CrestSettingRow(
                 "Animate pages when switching Spaces",

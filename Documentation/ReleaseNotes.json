@@ -4316,7 +4316,7 @@
     },
     "appearance-light-dark-follow-system": {
       "category": "new",
-      "message": "Choose Light, Dark or System in Look and Feel. Crest follows macOS between light and dark by default, and in dark each Space wears a charcoal shade of its colors. Turn off Use Space colors for plain gray chrome in every Space."
+      "message": "Keep Crest light or dark, or let it follow macOS, in Settings › Appearance. Spaces can also dim their colors in dark."
     }
   }
 }

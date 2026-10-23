@@ -83,7 +83,7 @@ final class BrowserDeviceAppearanceStore {
     static let cornerRadiusKey = "crest.appearance.cornerRadius"
     static let surfaceMaterialKey = "crest.appearance.surfaceMaterial"
     static let modeKey = "crest.appearance.mode"
-    static let usesSpaceColorsKey = "crest.appearance.usesSpaceColors"
+    static let darkSpaceDimmingKey = "crest.appearance.darkSpaceDimming"
     static let maximumCornerRadius: Double = 40
     var cornerRadius: Double {
         didSet { defaults.set(sidebarCornerRadius, forKey: Self.cornerRadiusKey) }
@@ -103,9 +103,10 @@ final class BrowserDeviceAppearanceStore {
     var mode: BrowserAppearanceMode {
         didSet { defaults.set(mode.name, forKey: Self.modeKey) }
     }
-    /// Whether the window wears each Space's colors, or plain neutral chrome.
-    var usesSpaceColors: Bool {
-        didSet { defaults.set(usesSpaceColors, forKey: Self.usesSpaceColorsKey) }
+    /// How far a dark appearance dims each Space's colors toward charcoal,
+    /// from 0, as chosen, to 1.
+    var darkSpaceDimming: Double {
+        didSet { defaults.set(darkSpaceDimming, forKey: Self.darkSpaceDimmingKey) }
     }
     /// The scheme the windows draw in now, as the platform reports it once
     /// ``mode`` and the system's own appearance are applied.
@@ -142,9 +143,10 @@ final class BrowserDeviceAppearanceStore {
         mode =
             BrowserAppearanceMode.named(defaults.string(forKey: Self.modeKey))
             ?? BrowserLookAndFeelDefaults.appearanceMode
-        usesSpaceColors =
-            defaults.object(forKey: Self.usesSpaceColorsKey) == nil
-            ? BrowserLookAndFeelDefaults.usesSpaceColors : defaults.bool(forKey: Self.usesSpaceColorsKey)
+        darkSpaceDimming =
+            (defaults.object(forKey: Self.darkSpaceDimmingKey) as? Double).flatMap {
+                $0.isFinite ? min(max($0, 0), 1) : nil
+            } ?? BrowserLookAndFeelDefaults.darkSpaceDimming
     }
 
     private func save(_ value: some Encodable, key: String) {

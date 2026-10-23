@@ -202,7 +202,7 @@ private struct BrowserSidebarTabRowAppearance: ViewModifier {
     }
 
     private var accent: Color {
-        (BrowserDeviceAppearanceStore.shared.tabs.color ?? branding?.shownAccent ?? .indigo).color
+        (BrowserDeviceAppearanceStore.shared.tabs.color ?? branding?.primaryColor ?? .indigo).color
     }
 
     private var branding: SpaceBranding? {

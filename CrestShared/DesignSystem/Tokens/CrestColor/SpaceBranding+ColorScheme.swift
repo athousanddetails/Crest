@@ -1,9 +1,8 @@
 import SwiftUI
 
-/// A Space's look as a window draws it: its own colors, or plain neutral
-/// chrome when the device turns Space colors off; as chosen in light, and in
-/// dark over a charcoal base tinted with those colors, with text that reads
-/// over it.
+/// A Space's look as a window draws it: as chosen in light, and in dark with
+/// its colors dimmed as far as the device asks, under text that reads over
+/// them.
 extension SpaceBranding {
     // MARK: - Variables
 
@@ -11,43 +10,21 @@ extension SpaceBranding {
     @MainActor
     var shown: SpaceBranding {
         let appearance = BrowserDeviceAppearanceStore.shared
-        return (appearance.usesSpaceColors ? self : withoutColors).appearing(in: appearance.shownColorScheme)
-    }
-
-    /// The accent selected tabs, pins and the address field draw with now:
-    /// the Space's own, kept vivid in dark, or a neutral gray when the window
-    /// ignores Space colors.
-    @MainActor
-    var shownAccent: BrandColor {
-        (BrowserDeviceAppearanceStore.shared.usesSpaceColors ? self : withoutColors).primaryColor
-    }
-
-    /// This look without its colors: one plain neutral gray, without pattern,
-    /// gradient, texture or fade, and text in whichever tone reads over it.
-    var withoutColors: SpaceBranding {
-        var look = self
-        look.colors = ColorPalette(colors: [.neutralChrome, .neutralChrome, .neutralChrome])
-        look.bannerPattern = .solid
-        look.themeMode = .banner
-        look.bannerStrength = 1
-        look.readabilityFade = 0
-        look.showsTexture = false
-        look.textColorMode = .automatic
-        return look
+        return appearing(in: appearance.shownColorScheme, dimming: appearance.darkSpaceDimming)
     }
 
     // MARK: - Actions - Appearance
 
-    /// This look drawn in `colorScheme`. Dark keeps each color's hue and
-    /// darkens it to a charcoal already dark enough to read over, so it draws
-    /// without the readability fade, and works its text tone out from the
-    /// darkened colors, so a text color chosen for the light look never draws
-    /// dark on dark.
-    func appearing(in colorScheme: ColorScheme) -> SpaceBranding {
-        guard colorScheme == .dark else { return self }
+    /// This look drawn in `colorScheme`. Dark dims each color `dimming` of the
+    /// way, from 0 to 1, toward a charcoal tint of its hue, eases the
+    /// readability fade out as it does, and works its text tone out from the
+    /// dimmed colors, so a text color chosen for the bright look never draws
+    /// dark on dark. Light, or no dimming, draws the look as chosen.
+    func appearing(in colorScheme: ColorScheme, dimming: Double) -> SpaceBranding {
+        guard colorScheme == .dark, dimming > 0 else { return self }
         var look = self
-        look.colors = ColorPalette(colors: colors.map(\.darkAppearance))
-        look.readabilityFade = 0
+        look.colors = ColorPalette(colors: colors.map { $0.dimmed(by: dimming) })
+        look.readabilityFade = readabilityFade * (1 - dimming)
         look.textColorMode = .automatic
         return look
     }

@@ -20,7 +20,7 @@ struct SpaceForegroundBlend: ViewModifier {
             SpaceForegroundPresentation.Tone(
                 id: space.id, white: branding.shown.foregroundTone == .light ? 1 : 0)
         }
-        accents = brandings.map { $0.shownAccent.color }
+        accents = brandings.map { $0.primaryColor.color }
         self.selectedSpaceID = selectedSpaceID
     }
 
