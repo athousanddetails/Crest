@@ -20,7 +20,7 @@ struct SpaceForegroundBlend: ViewModifier {
     private var tones: [SpaceForegroundPresentation.Tone] {
         zip(ids, brandings).map { id, branding in
             SpaceForegroundPresentation.Tone(
-                id: id, white: branding.foregroundTone(over: colorScheme) == .light ? 1 : 0)
+                id: id, white: branding.shown.foregroundTone(over: colorScheme) == .light ? 1 : 0)
         }
     }
 

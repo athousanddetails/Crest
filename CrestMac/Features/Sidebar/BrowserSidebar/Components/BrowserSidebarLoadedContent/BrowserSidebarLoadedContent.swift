@@ -102,7 +102,7 @@ struct BrowserSidebarLoadedContent: View {
             .environment(
                 \.colorScheme,
                 context.browser.shownSpace.map {
-                    $0.settings.look.colorScheme(over: colorScheme)
+                    $0.settings.look.shown.colorScheme(over: colorScheme)
                 } ?? .dark
             )
             .modifier(
