@@ -137,7 +137,7 @@ struct BrowserCrestForge: View {
             }
         } trailing: {
             ForEach(SpaceScheme.all, id: \.self) { scheme in
-                BrowserSpaceSchemeChoice(scheme: scheme, branding: $branding, tint: .accentColor)
+                BrowserSpaceSchemeChoice(scheme: scheme, branding: $branding, symbol: symbol, tint: .accentColor)
             }
         }
     }
