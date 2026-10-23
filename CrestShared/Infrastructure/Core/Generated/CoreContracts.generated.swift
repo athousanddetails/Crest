@@ -21407,10 +21407,10 @@ struct SpaceScheme: Hashable, Sendable {
         facts = Facts(name: name, title: title, look: look)
     }
 
-    static let arc = SpaceScheme(
+    static let neutral = SpaceScheme(
         tag: 0,
-        name: "arc",
-        title: LocalizedStringResource("Arc"),
+        name: "neutral",
+        title: LocalizedStringResource("Neutral"),
         look: SpaceBranding(
             colors: ColorPalette(colors: [BrandColor(red: 0.337, green: 0.337, blue: 0.337, alpha: 1)]),
             bannerPattern: SpaceBannerPattern.diagonal,
@@ -21460,7 +21460,7 @@ struct SpaceScheme: Hashable, Sendable {
         )
     )
 
-    static let all: [SpaceScheme] = [arc]
+    static let all: [SpaceScheme] = [neutral]
 
     static func named(_ name: String?) -> SpaceScheme? {
         all.first { $0.name == name }
@@ -22664,15 +22664,15 @@ struct Tincture: Hashable, Sendable {
         title: LocalizedStringResource("Bone"),
         color: BrandColor(red: 0.812, green: 0.82, blue: 0.831, alpha: 1)
     )
-    static let arcSmoke = Tincture(
+    static let neutralSmoke = Tincture(
         tag: 55,
-        name: "arcSmoke",
+        name: "neutralSmoke",
         title: LocalizedStringResource("Smoke"),
         color: BrandColor(red: 0.337, green: 0.337, blue: 0.337, alpha: 1)
     )
-    static let arcGray = Tincture(
+    static let neutralGray = Tincture(
         tag: 56,
-        name: "arcGray",
+        name: "neutralGray",
         title: LocalizedStringResource("Gray"),
         color: BrandColor(red: 0.588, green: 0.588, blue: 0.588, alpha: 1)
     )
@@ -22733,8 +22733,8 @@ struct Tincture: Hashable, Sendable {
         sunGules,
         sunOr,
         vigilBone,
-        arcSmoke,
-        arcGray
+        neutralSmoke,
+        neutralGray
     ]
 
     static func named(_ name: String?) -> Tincture? {

@@ -1,19 +1,19 @@
 namespace CrestCore.Contracts;
 
-/// A modern look a Space can start from: another browser's sidebar, light
-/// or dark with the device, under the Space's own icon, with no arms.
+/// A modern look a Space can start from: a plain sidebar, light or dark with
+/// the device, under the Space's own icon, with no arms.
 /// Choosing one copies its look into the Space, so a Space keeps the look it
 /// was given when a scheme changes.
 public sealed class SpaceScheme {
     #region Static Variables
 
-    /// Arc's neutral sidebar: a gray laid thinly over the window's own
-    /// background, which settles it near Arc's #333 by night and #E5E5E5 by
-    /// day, under Arc's grain, with its icon in Arc's mid gray.
-    public static readonly SpaceScheme Arc = new("arc", "Arc", SchemeLook(
-        [Tincture.ArcSmoke], Tincture.ArcGray, strength: 0.15, showsTexture: true));
+    /// A neutral gray laid thinly over the window's own background, which
+    /// settles it near #333 by night and #E5E5E5 by day, under a fine grain,
+    /// with its icon in a mid gray. The values follow Arc's sidebar.
+    public static readonly SpaceScheme Neutral = new("neutral", "Neutral", SchemeLook(
+        [Tincture.NeutralSmoke], Tincture.NeutralGray, strength: 0.15, showsTexture: true));
 
-    public static IReadOnlyList<SpaceScheme> All { get; } = [Arc];
+    public static IReadOnlyList<SpaceScheme> All { get; } = [Neutral];
 
     #endregion
 

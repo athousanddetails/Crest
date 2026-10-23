@@ -4314,9 +4314,9 @@
       "category": "internal",
       "message": "Upload iOS Cloud archives to TestFlight from the App Store export when the ad hoc export fails"
     },
-    "space-arc-look": {
+    "space-neutral-look": {
       "category": "new",
-      "message": "Spaces can start from an Arc look: Arc's neutral gray sidebar with its grain, light by day and dark by night with your Mac's appearance. A Space's text color can now follow the system's appearance too."
+      "message": "Spaces can start from a Neutral look: a plain gray sidebar with a fine grain that goes light or dark with the system. A Space's text color can follow the system's appearance too."
     }
   }
 }
