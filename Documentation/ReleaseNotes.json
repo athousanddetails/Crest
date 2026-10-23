@@ -4313,6 +4313,10 @@
     "upload-ios-cloud-archives-without-ad-hoc-export": {
       "category": "internal",
       "message": "Upload iOS Cloud archives to TestFlight from the App Store export when the ad hoc export fails"
+    },
+    "space-arc-look": {
+      "category": "new",
+      "message": "Spaces can start from an Arc look: Arc's neutral gray sidebar with its grain, light by day and dark by night with your Mac's appearance. A Space's text color can now follow the system's appearance too."
     }
   }
 }

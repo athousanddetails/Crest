@@ -7,7 +7,7 @@ import Foundation
 enum CoreCodec {
     /// SHA-256 of the canonical contract schema. The core refuses any other.
     static let fingerprint: [UInt8] = [
-        0xbd, 0x40, 0x7a, 0xa2, 0x6a, 0x0d, 0x28, 0xe3, 0xef, 0x21, 0x6a, 0x8d, 0x88, 0x1f, 0x40, 0x6d, 0x55, 0x46, 0x71, 0xd2, 0xce, 0xb3, 0xd8, 0x2b, 0x39, 0xe1, 0x55, 0xd9, 0x0e, 0xd3, 0xfc, 0x7c
+        0x7f, 0xbf, 0xe5, 0x1b, 0x38, 0x3b, 0xb6, 0xf9, 0x4c, 0xe4, 0x62, 0x92, 0x08, 0xd7, 0xbd, 0x3c, 0x3f, 0x85, 0x3d, 0x2c, 0x1a, 0xa4, 0xac, 0x2b, 0xfd, 0xb3, 0x94, 0xa7, 0xce, 0x54, 0x22, 0x58
     ]
     /// SHA-256 of the engine contract alone, which an engine binding registers with.
     static let engineFingerprint: [UInt8] = [
@@ -26339,6 +26339,20 @@ extension SpaceIconStyle {
         let tag = try reader.readEnum()
         guard Self.all.indices.contains(tag) else {
             throw WireError.malformed("Unknown SpaceIconStyle \(tag)")
+        }
+        self = Self.all[tag]
+    }
+
+    func encode(into writer: inout WireWriter) {
+        writer.writeEnum(tag)
+    }
+}
+
+extension SpaceScheme {
+    init(from reader: inout WireReader) throws(WireError) {
+        let tag = try reader.readEnum()
+        guard Self.all.indices.contains(tag) else {
+            throw WireError.malformed("Unknown SpaceScheme \(tag)")
         }
         self = Self.all[tag]
     }
