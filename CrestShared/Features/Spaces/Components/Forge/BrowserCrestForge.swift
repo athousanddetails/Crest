@@ -24,7 +24,7 @@ struct BrowserCrestForge: View {
     private var context: BrowserCrestStudioContext {
         BrowserCrestStudioContext(
             branding: $branding,
-            defaults: SpaceHouse.startingPoint(of: branding)?.look ?? initialAppearance ?? branding,
+            defaults: branding.startingLook ?? initialAppearance ?? branding,
             compact: false, previewBranding: editingStart)
     }
 

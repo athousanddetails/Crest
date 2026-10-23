@@ -2,12 +2,19 @@ import Foundation
 
 /// A scheme as the starting point of a Space's look.
 extension SpaceScheme {
+    // MARK: - Actions - Lookup
+
+    /// The scheme a look started from, by the name its crest recorded.
+    static func startingPoint(of branding: SpaceBranding) -> SpaceScheme? {
+        all.first { $0.name == branding.crest.startingPresetID }
+    }
+
     // MARK: - Actions - Looks
 
     /// `branding` wearing the scheme's sidebar: its colors, gradient, strength,
     /// fade and texture, under the Space's icon in the scheme's icon color,
     /// keeping the Space's folder choices and its crest for when it goes back
-    /// to one.
+    /// to one, which records the scheme as where the look started.
     func applying(to branding: SpaceBranding) -> SpaceBranding {
         var updated = branding
         updated.colors = look.colors
@@ -20,7 +27,7 @@ extension SpaceScheme {
         updated.textColorMode = look.textColorMode
         updated.iconStyle = look.iconStyle
         updated.symbolColor = look.symbolColor
-        updated.crest.startingPresetID = nil
+        updated.crest.startingPresetID = name
         updated.hasCustomAppearance = false
         return updated.normalized()
     }

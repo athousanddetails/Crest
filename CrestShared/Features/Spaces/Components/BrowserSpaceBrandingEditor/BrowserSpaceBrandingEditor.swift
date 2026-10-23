@@ -15,7 +15,7 @@ struct BrowserSpaceBrandingEditor: View {
     @State private var choosesIdentityEmoji = false
 
     private var defaults: SpaceBranding {
-        SpaceHouse.startingPoint(of: branding)?.look ?? initialAppearance ?? branding
+        branding.startingLook ?? initialAppearance ?? branding
     }
 
     private var context: BrowserCrestStudioContext {
