@@ -25,6 +25,7 @@ struct BrowserMacDownloadFeedbackLayer: View {
                 ForEach(feedback.flights) { flight in
                     if let path = flight.path {
                         BrowserMacDownloadFlightIcon(
+                            symbol: BrowserDownloadFileKind(filename: flight.filename).symbol,
                             path: BrowserMacDownloadFlightPath(
                                 source: CGPoint(x: path.source.x - root.minX, y: path.source.y - root.minY),
                                 destination: CGPoint(
@@ -71,6 +72,7 @@ struct BrowserMacDownloadFeedbackLayer: View {
 }
 
 private struct BrowserMacDownloadFlightIcon: View {
+    let symbol: String
     let path: BrowserMacDownloadFlightPath
     let arrive: () -> Void
     @State private var progress = 0.0
@@ -78,7 +80,9 @@ private struct BrowserMacDownloadFlightIcon: View {
 
     var body: some View {
         Color.clear
-            .modifier(BrowserMacDownloadFlightDrawing(path: path, progress: progress, appearance: appearance))
+            .modifier(
+                BrowserMacDownloadFlightDrawing(symbol: symbol, path: path, progress: progress, appearance: appearance)
+            )
             .accessibilityHidden(true)
             .task {
                 await Task.yield()
@@ -97,6 +101,7 @@ private struct BrowserMacDownloadFlightIcon: View {
 }
 
 private struct BrowserMacDownloadFlightDrawing: AnimatableModifier {
+    let symbol: String
     let path: BrowserMacDownloadFlightPath
     nonisolated var progress: Double
     nonisolated var appearance: Double
@@ -111,7 +116,7 @@ private struct BrowserMacDownloadFlightDrawing: AnimatableModifier {
 
     func body(content: Content) -> some View {
         content.overlay(alignment: .topLeading) {
-            Image(systemName: "doc.fill")
+            Image(systemName: symbol)
                 .font(.system(size: 28, weight: .medium))
                 .symbolRenderingMode(.hierarchical)
                 .foregroundStyle(.primary)
