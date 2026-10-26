@@ -53,9 +53,14 @@ final class BrowserDesktopWebView: WKWebView {
         guard let menuHost, let context = menuHost.takeMenuContext() else { return }
         let actions = menuHost.contextMenuActions(linkURL: context.linkURL, selectionText: context.selectionText)
         // WebKit's item opens a new tab only where Crest offers one for the
-        // link; otherwise it keeps WebKit's own name.
+        // link; otherwise it keeps WebKit's own name. Standing in for the
+        // New Tab row, it hides when that row is hidden.
         if actions.contains(where: \.opensNewTab) {
-            menu.relabelWebKitLinkDestination()
+            if BrowserAppPreferenceStore.shared.linkMenu.shows(.newTab) {
+                menu.relabelWebKitLinkDestination()
+            } else if let item = menu.webKitLinkDestinationItem {
+                menu.removeItem(item)
+            }
         }
         BrowserPageContextMenu(actions: actions, host: menuHost, view: self)
             .insert(into: menu, newTab: menu.webKitLinkDestinationItem)

@@ -4593,6 +4593,10 @@
     "link-menu-opens-in-new-tab-first": {
       "category": "improved",
       "message": "When you right-click a link, Open Link in New Tab is the first item in the menu, and Open Link in Another Space comes after Peek and Split View. Pages that run in Chromium no longer offer to open a link as another Chromium profile."
+    },
+    "customize-link-context-menu": {
+      "category": "new",
+      "message": "On Mac, Links settings let you choose which of Crest's items appear when you right-click a link or selected text, and drag them into the order you want."
     }
   }
 }
