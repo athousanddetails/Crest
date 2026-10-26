@@ -72,6 +72,7 @@ struct BrowserMacDownloadFeedbackLayer: View {
 }
 
 private struct BrowserMacDownloadFlightIcon: View {
+    /// The symbol of the file's kind, which the icon flies as.
     let symbol: String
     let path: BrowserMacDownloadFlightPath
     let arrive: () -> Void
@@ -101,6 +102,7 @@ private struct BrowserMacDownloadFlightIcon: View {
 }
 
 private struct BrowserMacDownloadFlightDrawing: AnimatableModifier {
+    /// The symbol of the file's kind, drawn on the flying tile.
     let symbol: String
     let path: BrowserMacDownloadFlightPath
     nonisolated var progress: Double

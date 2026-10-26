@@ -4,6 +4,10 @@ import SwiftUI
 /// and downloads lists, badged when downloads have finished unseen. It wears
 /// the symbol of the list it opens, which its menu changes.
 struct BrowserSpaceSwitcherCommonListsButton: View {
+    /// The width of the ring that shows the newest live download's progress
+    /// around the button.
+    private static let progressLineWidth: CGFloat = 2.5
+
     let isExpanded: Bool
     let surface: BrowserUtilitySurface
     let downloads: [DownloadState]
@@ -29,14 +33,18 @@ struct BrowserSpaceSwitcherCommonListsButton: View {
             )
             .symbolVariant(isExpanded ? .fill : .none)
             .background {
-                if let progress = downloads.notificationProgress {
-                    BrowserSpaceSwitcherDownloadProgressRing(progress: progress, tint: badgeColor)
-                        .transition(.opacity)
+                if let download = downloads.newestLiveDownload {
+                    BrowserDownloadProgressRing(
+                        fraction: download.knownProgress,
+                        tint: badgeColor,
+                        lineWidth: Self.progressLineWidth
+                    )
+                    .transition(.opacity)
                 }
             }
             .animation(
                 CrestMotion.contentState.unlessReducingMotion(reduceMotion),
-                value: downloads.notificationProgress == nil
+                value: downloads.newestLiveDownload == nil
             )
             .contextMenu {
                 Picker(selection: Binding(get: { surface }, set: choose)) {
@@ -108,31 +116,6 @@ struct BrowserSpaceSwitcherCommonListsButton: View {
         #endif
         return .download(newDownloads.first?.id)
     }
-}
-
-/// How far the newest live download has come, drawn around the button that
-/// opens the downloads list.
-private struct BrowserSpaceSwitcherDownloadProgressRing: View {
-    let progress: Double
-    let tint: Color
-
-    @Environment(\.accessibilityReduceMotion) private var reduceMotion
-
-    var body: some View {
-        ZStack {
-            Circle()
-                .stroke(.secondary.opacity(CrestOpacity.border), lineWidth: Self.lineWidth)
-            Circle()
-                .trim(from: 0, to: max(min(progress, 1), 0.03))
-                .stroke(tint, style: StrokeStyle(lineWidth: Self.lineWidth, lineCap: .round))
-                .rotationEffect(.degrees(-90))
-                .animation(CrestMotion.loadingProgress.unlessReducingMotion(reduceMotion), value: progress)
-        }
-        .padding(Self.lineWidth / 2)
-        .accessibilityHidden(true)
-    }
-
-    private static let lineWidth: CGFloat = 2.5
 }
 
 #if DEBUG

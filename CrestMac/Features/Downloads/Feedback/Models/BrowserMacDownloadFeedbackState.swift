@@ -8,6 +8,7 @@ import Observation
 final class BrowserMacDownloadFeedbackState {
     struct Flight: Identifiable {
         let id: UUID
+        /// The name of the file in flight, whose kind picks the glyph it flies as.
         let filename: String
         let path: BrowserMacDownloadFlightPath?
     }

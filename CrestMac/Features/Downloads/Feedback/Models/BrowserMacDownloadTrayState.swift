@@ -19,6 +19,9 @@ final class BrowserMacDownloadTrayState {
 
     /// The downloads shown, oldest first.
     private(set) var downloadIDs: [UUID] = []
+    /// The starts the window has taken, among those the download center still
+    /// reports. A start leaves the center's events after a moment and never
+    /// comes back, so the set stays as small as those events.
     @ObservationIgnored private var adoptedIDs: Set<UUID> = []
 
     // MARK: - Actions - Showing
@@ -27,6 +30,7 @@ final class BrowserMacDownloadTrayState {
     /// whether there were any.
     @discardableResult
     func adopt(_ events: [BrowserDownloadFeedbackEvent], in window: ObjectIdentifier?) -> Bool {
+        adoptedIDs.formIntersection(events.map(\.id))
         guard let window else { return false }
         let started = events.filter {
             $0.source.windowIdentifier == window && !adoptedIDs.contains($0.id)
@@ -37,6 +41,8 @@ final class BrowserMacDownloadTrayState {
         return true
     }
 
+    /// Takes the card of `downloadID` out of the tray. Its start stays taken,
+    /// so it does not come back.
     func dismiss(_ downloadID: UUID) {
         downloadIDs.removeAll { $0 == downloadID }
     }

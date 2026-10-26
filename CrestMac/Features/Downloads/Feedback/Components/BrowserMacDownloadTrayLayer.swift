@@ -6,10 +6,14 @@ import UniformTypeIdentifiers
 /// file's progress and, once finished, shows the file in Finder when pressed,
 /// until it leaves a moment after its download ends.
 struct BrowserMacDownloadTrayLayer: View {
+    /// The downloads of the window's browsing mode, whose feedback events say
+    /// which downloads started here and whose records say how far they are.
     let downloadCenter: BrowserDownloadCenter
 
     @Environment(\.accessibilityReduceMotion) private var reduceMotion
+    /// The downloads this window shows, which live as long as the window does.
     @State private var tray = BrowserMacDownloadTrayState()
+    /// The window the layer is in, known once it joins one.
     @State private var windowIdentifier: ObjectIdentifier?
 
     var body: some View {
@@ -46,10 +50,14 @@ struct BrowserMacDownloadTrayLayer: View {
         }
     }
 
+    /// The records of the downloads the tray shows, oldest first. One whose
+    /// record is gone is no longer drawn.
     private var shownDownloads: [DownloadState] {
         tray.downloadIDs.compactMap(downloadCenter.item)
     }
 
+    /// Shows the downloads among `events` that started in `window`, and tells
+    /// VoiceOver a download started.
     private func adopt(_ events: [BrowserDownloadFeedbackEvent], in window: ObjectIdentifier?) {
         if tray.adopt(events, in: window) {
             AccessibilityNotification.Announcement(String(localized: "Download started")).post()
@@ -57,15 +65,26 @@ struct BrowserMacDownloadTrayLayer: View {
     }
 }
 
+/// One download as a dark card: its file, its name and one line of detail. A
+/// finished card shows the file in Finder when pressed and can be dragged out
+/// as the file.
 private struct BrowserMacDownloadTrayCard: View {
+    /// The narrowest card, which a short name still fills out.
     private static let minimumWidth: CGFloat = 220
+    /// The widest card; a longer name is shortened in the middle.
     private static let maximumWidth: CGFloat = 300
+    /// The side of the square that holds the file glyph and its ring.
     private static let iconSize: CGFloat = 28
+    /// The width of the progress ring around the file glyph.
+    private static let progressLineWidth: CGFloat = 2
 
+    /// The download's record, as the core last published it.
     let download: DownloadState
+    /// Takes the card out of the tray.
     let dismiss: () -> Void
 
     @Environment(\.accessibilityReduceTransparency) private var reduceTransparency
+    /// Whether the pointer rests on the card, which keeps it in place.
     @State private var isHovering = false
 
     var body: some View {
@@ -93,6 +112,8 @@ private struct BrowserMacDownloadTrayCard: View {
             }
     }
 
+    /// The card's face, which is a button once there is a finished file to go
+    /// to.
     @ViewBuilder
     private var content: some View {
         if let destination, let fileURL = download.destinationURL {
@@ -114,6 +135,7 @@ private struct BrowserMacDownloadTrayCard: View {
         }
     }
 
+    /// The file glyph beside the name and its detail.
     private var label: some View {
         HStack(spacing: CrestSpacing.medium) {
             icon
@@ -136,18 +158,19 @@ private struct BrowserMacDownloadTrayCard: View {
         .contentShape(.rect)
     }
 
-    /// The file, ringed by its progress while it downloads.
+    /// The file, ringed by its progress while the download is live. The ring
+    /// turns while the size is unknown.
     private var icon: some View {
         ZStack {
             Image(systemName: "doc.fill")
-                .font(.system(size: download.phase.isTransferring ? 12 : 22, weight: .regular))
+                .font(.system(size: download.phase.isLive ? 12 : 22, weight: .regular))
                 .foregroundStyle(.primary)
-            if download.phase.isTransferring {
-                Circle().stroke(.secondary.opacity(CrestOpacity.statusSurface), lineWidth: 2)
-                Circle()
-                    .trim(from: 0, to: max(min(download.progress, 1), 0.03))
-                    .stroke(.primary, style: StrokeStyle(lineWidth: 2, lineCap: .round))
-                    .rotationEffect(.degrees(-90))
+            if download.phase.isLive {
+                BrowserDownloadProgressRing(
+                    fraction: download.knownProgress,
+                    tint: .primary,
+                    lineWidth: Self.progressLineWidth
+                )
             }
         }
     }
@@ -175,6 +198,8 @@ private struct BrowserMacDownloadTrayCard: View {
         .foregroundStyle(.secondary)
     }
 
+    /// The file's kind as Finder names it, such as "Zip archive", when its
+    /// extension names one.
     private var fileKind: String? {
         UTType(filenameExtension: (download.filename as NSString).pathExtension)?.localizedDescription
     }

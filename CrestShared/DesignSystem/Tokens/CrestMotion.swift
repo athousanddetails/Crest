@@ -177,6 +177,8 @@ enum CrestMotion {
     static var feedbackPresentation: Animation {
         .snappy(duration: feedbackPresentationTransition)
     }
+    /// A springy rise with a little overshoot, so a download's card pops into
+    /// place.
     static var downloadCardEntrance: Animation {
         .spring(duration: downloadCardEntranceTransition, bounce: 0.3)
     }
